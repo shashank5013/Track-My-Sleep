@@ -32,7 +32,9 @@ class SleepTrackerViewModel(
         val database: SleepDatabaseDao,
         application: Application) : AndroidViewModel(application) {
 
-        private val  allNight=database.getAllNights()
+        private val  _allNight=database.getAllNights()
+        val allNight:LiveData<List<SleepNight>>
+        get() = _allNight
 
         val allNightString=Transformations.map(allNight){
                         formatNights(it,application.resources)
@@ -59,7 +61,7 @@ class SleepTrackerViewModel(
 
         private fun initialiseTonight(){
                 viewModelScope.launch {
-                        var currentNight: SleepNight? = getTonight()
+                        val currentNight: SleepNight? = getTonight()
                         if(currentNight!=null && (currentNight.startTime==currentNight.endTime)){
                                 _tonight.value=currentNight
                         }
@@ -85,8 +87,9 @@ class SleepTrackerViewModel(
                                 it.endTime=System.currentTimeMillis()
                                 update(it)
                         }
+
                         _currentNightEnded.value=true
-                        _tonight.value=null
+
                 }
         }
         fun clearAllNight(){
