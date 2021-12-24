@@ -17,6 +17,7 @@
 package com.example.android.trackmysleepquality.sleepquality
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.android.trackmysleepquality.R
 import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.databinding.FragmentSleepQualityBinding
@@ -55,7 +58,9 @@ class SleepQualityFragment : Fragment() {
         val application = requireNotNull(this.activity).application
         val database=SleepDatabase.getInstance(application).sleepDatabaseDao()
 
-        val sleepQualityViewModelFactory=SleepQualityViewModelFactory(database,application)
+        val args:SleepQualityFragmentArgs by navArgs()
+        Log.d("Debugger","current night : ${args.nightID}")
+        val sleepQualityViewModelFactory=SleepQualityViewModelFactory(args.nightID,database,application)
         sleepQualityViewModel=ViewModelProvider(this,sleepQualityViewModelFactory).get(SleepQualityViewModel::class.java)
 
         sleepQualityViewModel.qualityUpdateEnded.observe(viewLifecycleOwner, Observer {qualityUpdateEnded->

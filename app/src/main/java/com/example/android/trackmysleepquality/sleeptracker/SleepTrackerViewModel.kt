@@ -41,6 +41,8 @@ class SleepTrackerViewModel(
         }
 
         private val _tonight=MutableLiveData<SleepNight?>()
+        val tonight:LiveData<SleepNight?>
+        get() = _tonight
 
         private val _currentNightEnded=MutableLiveData<Boolean>()
         val currentNightEnded:LiveData<Boolean>
@@ -73,9 +75,9 @@ class SleepTrackerViewModel(
 
         fun startTracking(){
                 val currentNight=SleepNight()
-                _tonight.value=currentNight
                 viewModelScope.launch{
                         insert(currentNight)
+                        _tonight.value=getTonight()
                 }
 
         }
@@ -116,4 +118,6 @@ class SleepTrackerViewModel(
         }
 
 }
+
+
 

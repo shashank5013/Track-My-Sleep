@@ -8,14 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.databinding.ListItemSleepNightBinding
 
-class SleepTrackerAdapter : RecyclerView.Adapter<SleepTrackerAdapter.ViewHolder>() {
+class SleepTrackerAdapter(val listener: SleepNightNavigate): RecyclerView.Adapter<SleepTrackerAdapter.ViewHolder>() {
 
     class ViewHolder private constructor(val binding:ListItemSleepNightBinding) : RecyclerView.ViewHolder(binding.root){
 
         fun bind(
-            currNight: SleepNight
+            currNight: SleepNight,
+            listener: SleepNightNavigate
         ) {
             binding.sleepNight=currNight
+            binding.sleepListener=listener
             binding.executePendingBindings()
         }
 
@@ -50,12 +52,14 @@ class SleepTrackerAdapter : RecyclerView.Adapter<SleepTrackerAdapter.ViewHolder>
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currNight=differ.currentList[position]
-        holder.bind(currNight)
+        holder.bind(currNight,listener)
     }
 
 
     override fun getItemCount()=differ.currentList.size
 
 
-
+}
+class SleepNightNavigate(val listener:(SleepNight)->Unit){
+    fun onCLick(sleep:SleepNight)=listener(sleep)
 }

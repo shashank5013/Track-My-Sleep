@@ -17,7 +17,6 @@
 package com.example.android.trackmysleepquality.sleepquality
 
 import android.app.Application
-import android.provider.SyncStateContract.Helpers.update
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,6 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SleepQualityViewModel(
+        val nightID:Long,
         val database: SleepDatabaseDao,
         application: Application):AndroidViewModel(application){
 
@@ -38,15 +38,17 @@ class SleepQualityViewModel(
 
         fun updateNight(quality:Int){
             viewModelScope.launch {
-                val tonight=getTonight()
-                tonight?.sleepQuality=quality
+                val tonight=getNight(nightID)
+                tonight?.let {
+                    it.sleepQuality=quality
+                }
                 update(tonight!!)
                 _qualityUpdateEnded.value=true
             }
         }
 
-        private suspend fun getTonight() = withContext(Dispatchers.IO){
-            database.getTonight()
+        private suspend fun getNight(key:Long) = withContext(Dispatchers.IO){
+            database.get(key)
         }
         private suspend fun update(sleepNight: SleepNight)= withContext(Dispatchers.IO){
             database.update(sleepNight)

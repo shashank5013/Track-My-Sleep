@@ -23,7 +23,7 @@ import androidx.room.PrimaryKey
 data class SleepNight(
     @PrimaryKey(autoGenerate = true)
     var nightID:Long=0L,
-    val startTime:Long=System.currentTimeMillis(),
+    var startTime:Long=System.currentTimeMillis(),
     var endTime:Long=System.currentTimeMillis(),
     var sleepQuality:Int=-1
 )
